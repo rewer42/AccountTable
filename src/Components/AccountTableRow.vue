@@ -16,7 +16,7 @@ const tagsInput = ref("");
 function validateAccount(account: Account) : boolean
 {
   wrongLogin.value = account.login.trim().length < 1;
-  const hasPassword = !!account.password && account.password.trim().length > 0;
+  const hasPassword = account.password != null && account.password.trim().length > 0;
 
   const isLocal = account.recordType === RecordType.Local;
   if (isLocal)
@@ -68,29 +68,63 @@ onMounted(() => {
 </script>
 
 <template>
-  <tr>
-    <td>
-      <input type="text" maxlength="50" v-model="tagsInput" v-on:focusout="onTagsUpdated()"/>
+  <tr class="tr">
+    <td class="table-cell">
+      <input class="table-content" type="text" maxlength="50" v-model="tagsInput" v-on:focusout="onTagsUpdated()"/>
     </td>
-    <td>
-      <select v-model="account.recordType" v-on:change="onChangeType()">
+    <td class="table-cell">
+      <select class="table-content" v-model="account.recordType" v-on:change="onChangeType()">
         <option v-for="option in RecordTypeLabelsKeys" :key="option" :value="option">
           {{ RecordTypeLabels[option] }}
         </option>
       </select>
     </td>
-    <td :class="{ 'two-column' : account.recordType != RecordType.Local, 'wrong' : wrongLogin }">
-      <input type="text" maxlength="100" v-model="account.login" v-on:focusout="onChangeAccount()"/></td>
-    <td :class="{ 'visible' : account.recordType == RecordType.Local, 'wrong' : wrongPass }">
-      <input type="password" maxlength="100" v-model="account.password" v-on:focusout="onChangeAccount()"/></td>
+    <td class="table-cell">
+      <input class="table-content" :class="{ 'two-column' : account.recordType != RecordType.Local, 'wrong' : wrongLogin }" type="text" maxlength="100" v-model="account.login" v-on:focusout="onChangeAccount()"/></td>
+    <td class="table-cell">
+      <input class="table-content" :class="{ 'invisible' : account.recordType != RecordType.Local, 'wrong' : wrongPass }" type="password" maxlength="100" v-model="account.password" v-on:focusout="onChangeAccount()"/></td>
     <td>
-      <button @click="onDeleteAccount(account)">delete</button>
+      <button class="delete-button" @click="onDeleteAccount(account)">x</button>
     </td>
   </tr>
 </template>
 
 <style scoped>
   .wrong {
-    border: 1px solid red;
+    border: 2px solid red !important;
+  }
+  .two-column{
+    width: 190% !important;
+  }
+  .invisible
+  {
+    visibility: hidden;
+  }
+  .table-cell
+  {
+    width: 200px;
+    height: 30px;
+  }
+  .table-content
+  {
+    border: 1px solid lightsteelblue;
+    display: block;
+    width: 90%;
+    height: 30px;
+    box-sizing: border-box;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    margin-left: 5%;
+  }
+  .delete-button
+  {
+    height: 28px;
+    aspect-ratio: 1;
+    border-radius: 25%;
+    color: red;
+    background: white;
+    font-size: 1.2em;
+    border: 2px solid lightsteelblue;
   }
 </style>
